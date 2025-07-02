@@ -1,4 +1,4 @@
-const GSCRIPT_MACRO_URL = "https://script.google.com/macros/s/AKfycbx2qnUImAcslVS6n4CC1Mazhb4TiKObDxurndtc4q7EszJ9WfrM2LkUCjzneIjSqsxU/exec";
+const GSCRIPT_MACRO_URL = "https://script.google.com/macros/s/AKfycbzQmuLPKGOcd_3qilhfoWtgmSoE5aoVaRXTOrs6dYLnjxq-NxgPW80Z8V4QhQyqDDoO/exec";
 
 
 // Define the steps with titles, instructions, demo videos, and durations
@@ -76,6 +76,7 @@ const stepInstructions = document.getElementById("step-instructions");
 // const demoVideo = document.getElementById("demo-video");
 const nextBtn = document.getElementById("next-btn");
 const startBtn = document.getElementById("start-btn");
+const testBtn = document.getElementById("test-btn");
 const usernameInput = document.getElementById("username");
 // const restartVideoBtn = document.getElementById("restart-video-btn");
 // const playVideoBtn = document.getElementById("play-video-btn");
@@ -107,6 +108,37 @@ startBtn.addEventListener("click", () => {
         alert("Please enter a username!");
     }
 });
+
+// Test Button Logic - Auto Complete
+testBtn.addEventListener("click", () => {
+    username = usernameInput.value.trim();
+    if (username) {
+        // Auto complete the entire process
+        autoCompleteWarmup();
+    } else {
+        alert("Please enter a username!");
+    }
+});
+
+// Auto Complete Function
+function autoCompleteWarmup() {
+    // Hide username screen and show success screen immediately
+    usernameScreen.style.display = "none";
+    successScreen.style.display = "block";
+    successScreen.classList.add("fade-in");
+    
+    // Update the success message to indicate it was auto-completed
+    const successTitle = successScreen.querySelector("h1");
+    const successMessage = successScreen.querySelector("p");
+    successTitle.textContent = "🧪 Test Complete!";
+    successMessage.textContent = "Auto-completed warmup for testing purposes.";
+    
+    // Post to spreadsheet
+    updateSpreadsheet(username);
+    
+    // Show toast notification
+    showToast("Test completed - data sent to spreadsheet");
+}
 
 // Play Video Button Logic - Commented out
 /*
@@ -300,20 +332,40 @@ nextBtn.addEventListener("click", () => {
 });
 
 // Update Google Spreadsheet
+// function updateSpreadsheet(username) {
+//     fetch(GSCRIPT_MACRO_URL, {
+//         method: "POST",
+//         mode: 'no-cors', // Add no-cors mode to bypass CORS restrictions
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify({ username: username })
+//     })
+//         .then(response => {
+//             // With no-cors, we can't access the response content
+//             console.log("Request sent successfully");
+//             return { success: true };
+//         })
+//         .catch(error => console.error("Error updating spreadsheet:", error));
+// }
+// Update Google Spreadsheet
 function updateSpreadsheet(username) {
+    const payload = {
+      username: username,
+      platform: 'instagram'    // ← now sending “instagram”
+    };
+  
     fetch(GSCRIPT_MACRO_URL, {
-        method: "POST",
-        mode: 'no-cors', // Add no-cors mode to bypass CORS restrictions
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: username })
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
     })
-        .then(response => {
-            // With no-cors, we can't access the response content
-            console.log("Request sent successfully");
-            return { success: true };
-        })
-        .catch(error => console.error("Error updating spreadsheet:", error));
-}
+      .then(() => {
+        console.log("Request sent with Instagram flag");
+      })
+      .catch(error => console.error("Error updating spreadsheet:", error));
+  }
+  
+
 
 // Function to show toast notification
 function showToast(message) {
