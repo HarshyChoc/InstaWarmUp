@@ -10,27 +10,21 @@ const steps = [
         // demo: "steps/follow.mp4",
         duration: 60, // 1 minute
         listItems: [
-            "drmaxbutterfield",
-            "juminjuce",
-            "relationships.usa",
-            "jimmy_on_relationships",
-            "relationship.lovegoals",
-            "laurenohunter",
-            "relationship_cards_usa",
-            "Couplesofsociety",
-            "Date_relation_quotes1",
-            "relationships",
-            "relationship_stats",
-            "thatgirlgrow",
-            "jordancandlish01",
-            "kinkymemesdaily",
-            "securerelationshipcoach",
-            "rootvi",
-            "relationshipreels",
-            "secrets_relationship",
-            "itsbaefeelings",
-            "relationshipsusa",
-            "lovesickrelationship"
+            "jayshetty",
+            "the.holistic.psychologist",
+            "stephanspeaks",
+            "nedratawwab",
+            "estherperelofficial",
+            "millennial.therapist",
+            "thesecurerelationship",
+            "createthelove",
+            "lysaterkeurst",
+            "mindfulmft",
+            "sitwithwhit",
+            "mymentalhealthspace",
+            "matthiasjbarker",
+            "holisticallygrace",
+            "therapyforwomen",
             
         ]
     },
@@ -76,13 +70,75 @@ const stepInstructions = document.getElementById("step-instructions");
 // const demoVideo = document.getElementById("demo-video");
 const nextBtn = document.getElementById("next-btn");
 const startBtn = document.getElementById("start-btn");
-const testBtn = document.getElementById("test-btn");
+// const testBtn = document.getElementById("test-btn");
 const usernameInput = document.getElementById("username");
 // const restartVideoBtn = document.getElementById("restart-video-btn");
 // const playVideoBtn = document.getElementById("play-video-btn");
 const horizontalListContainer = document.getElementById("horizontal-list-container");
 const horizontalList = document.getElementById("horizontal-list");
 const listTitle = document.getElementById("list-title");
+
+// Debug: Check if all elements are found
+console.log("DOM Elements check:");
+console.log("usernameScreen:", usernameScreen);
+console.log("stepScreen:", stepScreen);
+console.log("successScreen:", successScreen);
+console.log("stepTitle:", stepTitle);
+console.log("stepInstructions:", stepInstructions);
+console.log("nextBtn:", nextBtn);
+console.log("startBtn:", startBtn);
+console.log("usernameInput:", usernameInput);
+console.log("horizontalListContainer:", horizontalListContainer);
+console.log("horizontalList:", horizontalList);
+console.log("listTitle:", listTitle);
+
+// Defensive: remove legacy test button(s) if present, and watch for injections
+(function ensureNoTestButtons() {
+    const testKeywords = ["test", "auto complete", "🧪"];
+
+    function looksLikeTestButton(el) {
+        if (!el || el.nodeType !== 1) return false;
+        if (el.id === "test-btn") return true;
+        if (el.tagName === "BUTTON") {
+            const text = (el.textContent || "").toLowerCase();
+            return testKeywords.some(k => text.includes(k));
+        }
+        return false;
+    }
+
+    function removeTestUI(root = document) {
+        const exact = root.getElementById ? root.getElementById("test-btn") : null;
+        if (exact && exact.remove) exact.remove();
+
+        const buttons = root.querySelectorAll ? root.querySelectorAll("button") : [];
+        buttons.forEach(btn => { if (looksLikeTestButton(btn)) btn.remove(); });
+    }
+
+    // Initial sweep
+    removeTestUI(document);
+
+    // In case something renders slightly later
+    setTimeout(() => removeTestUI(document), 0);
+    setTimeout(() => removeTestUI(document), 100);
+
+    // Observe future DOM changes
+    const observer = new MutationObserver(mutations => {
+        for (const m of mutations) {
+            m.addedNodes && m.addedNodes.forEach(node => {
+                if (looksLikeTestButton(node)) {
+                    node.remove();
+                    return;
+                }
+                if (node.querySelectorAll) {
+                    node.querySelectorAll("button").forEach(btn => {
+                        if (looksLikeTestButton(btn)) btn.remove();
+                    });
+                }
+            });
+        }
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+})();
 
 // Create toast notification element
 const toastNotification = document.createElement('div');
@@ -102,43 +158,55 @@ let timerPaused = false; // Track if timer is paused
 startBtn.addEventListener("click", () => {
     username = usernameInput.value.trim();
     if (username) {
+        console.log("Username entered:", username);
+        console.log("Hiding username screen");
         usernameScreen.style.display = "none";
-        showStep(currentStep);
+        console.log("Showing step:", currentStep);
+        
+        try {
+            showStep(currentStep);
+        } catch (error) {
+            console.error("Error in showStep:", error);
+            // Fallback: show a simple step screen
+            stepScreen.style.display = "block";
+            stepTitle.textContent = "Step 1: Follow Accounts";
+            stepInstructions.textContent = "Follow between 10-15 accounts from the suggested list.";
+        }
     } else {
         alert("Please enter a username!");
     }
 });
 
 // Test Button Logic - Auto Complete
-testBtn.addEventListener("click", () => {
-    username = usernameInput.value.trim();
-    if (username) {
-        // Auto complete the entire process
-        autoCompleteWarmup();
-    } else {
-        alert("Please enter a username!");
-    }
-});
+// testBtn.addEventListener("click", () => {
+//     username = usernameInput.value.trim();
+//     if (username) {
+//         // Auto complete the entire process
+//         autoCompleteWarmup();
+//     } else {
+//         alert("Please enter a username!");
+//     }
+// });
 
-// Auto Complete Function
-function autoCompleteWarmup() {
-    // Hide username screen and show success screen immediately
-    usernameScreen.style.display = "none";
-    successScreen.style.display = "block";
-    successScreen.classList.add("fade-in");
+// // Auto Complete Function
+// function autoCompleteWarmup() {
+//     // Hide username screen and show success screen immediately
+//     usernameScreen.style.display = "none";
+//     successScreen.style.display = "block";
+//     successScreen.classList.add("fade-in");
     
-    // Update the success message to indicate it was auto-completed
-    const successTitle = successScreen.querySelector("h1");
-    const successMessage = successScreen.querySelector("p");
-    successTitle.textContent = "🧪 Test Complete!";
-    successMessage.textContent = "Auto-completed warmup for testing purposes.";
+//     // Update the success message to indicate it was auto-completed
+//     const successTitle = successScreen.querySelector("h1");
+//     const successMessage = successScreen.querySelector("p");
+//     successTitle.textContent = "🧪 Test Complete!";
+//     successMessage.textContent = "Auto-completed warmup for testing purposes.";
     
-    // Post to spreadsheet
-    updateSpreadsheet(username);
+//     // Post to spreadsheet
+//     updateSpreadsheet(username);
     
-    // Show toast notification
-    showToast("Test completed - data sent to spreadsheet");
-}
+//     // Show toast notification
+//     showToast("Test completed - data sent to spreadsheet");
+// }
 
 // Play Video Button Logic - Commented out
 /*
@@ -169,9 +237,34 @@ demoVideo.addEventListener("ended", () => {
 
 // Show Step Function
 function showStep(stepIndex) {
+    console.log("showStep called with index:", stepIndex);
+    
+    if (!steps || !steps[stepIndex]) {
+        console.error("Steps array or step not found:", steps, stepIndex);
+        return;
+    }
+    
     const step = steps[stepIndex];
+    console.log("Step data:", step);
+    
+    if (!stepTitle || !stepInstructions) {
+        console.error("Step title or instructions elements not found");
+        return;
+    }
+    
     stepTitle.textContent = step.title;
     stepInstructions.textContent = step.instructions;
+    console.log("Set title and instructions");
+    
+    // Debug: Check step content
+    const stepContent = document.querySelector('.step-content');
+    console.log("Step content element:", stepContent);
+    if (stepContent) {
+        const contentComputedStyle = window.getComputedStyle(stepContent);
+        console.log("Step content computed display:", contentComputedStyle.display);
+        console.log("Step content computed visibility:", contentComputedStyle.visibility);
+    }
+
     // demoVideo.src = step.demo;
 
     // Initially hide the video element and show only the play tutorial button - Commented out
@@ -183,6 +276,7 @@ function showStep(stepIndex) {
 
     // Handle horizontal list items if they exist
     if (step.listItems && step.listItems.length > 0) {
+        console.log("Processing list items");
         // Clear previous list items
         horizontalList.innerHTML = '';
 
@@ -240,16 +334,29 @@ function showStep(stepIndex) {
         // Show the horizontal list container
         horizontalListContainer.style.display = 'block';
     } else {
+        console.log("No list items for this step");
         // Hide the horizontal list container if no list items
         horizontalListContainer.style.display = 'none';
     }
 
+    console.log("About to show step screen");
     stepScreen.style.display = "block";
-    stepScreen.classList.add("fade-in");
+    // stepScreen.classList.add("fade-in"); // Temporarily comment out fade-in
+    console.log("Step screen display set to block");
+    
+    // Debug: Check computed styles
+    const computedStyle = window.getComputedStyle(stepScreen);
+    console.log("Step screen computed display:", computedStyle.display);
+    console.log("Step screen computed visibility:", computedStyle.visibility);
+    console.log("Step screen computed opacity:", computedStyle.opacity);
+    console.log("Step screen computed height:", computedStyle.height);
+    console.log("Step screen computed width:", computedStyle.width);
+    
     startTimer(step.duration);
+    console.log("Timer started");
 
     // Remove animation class after it runs to allow reuse
-    setTimeout(() => stepScreen.classList.remove("fade-in"), 500);
+    // setTimeout(() => stepScreen.classList.remove("fade-in"), 500); // Temporarily comment out
 }
 
 // Timer Function
@@ -350,7 +457,7 @@ nextBtn.addEventListener("click", () => {
 function updateSpreadsheet(username) {
     const payload = {
       username: username,
-      platform: 'instagram'    // ← now sending “instagram”
+      platform: 'instagram'    // ← now sending "instagram"
     };
   
     fetch(GSCRIPT_MACRO_URL, {
@@ -400,3 +507,17 @@ function showToast(message) {
         }, 300);
     }, 2000);
 }
+
+// Test function to manually show step screen
+function testShowStep() {
+    console.log("Testing manual step screen display");
+    if (stepScreen) {
+        stepScreen.style.display = "block";
+        console.log("Step screen should now be visible");
+    } else {
+        console.error("Step screen element not found!");
+    }
+}
+
+// Add test button to window for debugging
+window.testShowStep = testShowStep;

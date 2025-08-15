@@ -7,6 +7,9 @@ body {
     color: #2c3e50;
 }
 
+/* Hide legacy test button defensively even if present in cached HTML */
+#test-btn { display: none !important; }
+
 #app {
     max-width: 600px;
     margin: 0 auto;
