@@ -170,7 +170,7 @@ startBtn.addEventListener("click", () => {
             // Fallback: show a simple step screen
             stepScreen.style.display = "block";
             stepTitle.textContent = "Step 1: Follow Accounts";
-            stepInstructions.textContent = "Follow between 10-15 accounts from the suggested list.";
+            stepInstructions.textContent = "Follow between 10-15 accounts from the suggested list. If you followed all, follow different accounts within this niche";
         }
     } else {
         alert("Please enter a username!");
