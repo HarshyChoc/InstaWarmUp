@@ -1,4 +1,4 @@
-const GSCRIPT_MACRO_URL = "https://script.google.com/macros/s/AKfycbzQmuLPKGOcd_3qilhfoWtgmSoE5aoVaRXTOrs6dYLnjxq-NxgPW80Z8V4QhQyqDDoO/exec";
+const GSCRIPT_MACRO_URL = "https://script.google.com/macros/s/AKfycbwHLCjlEOdmOi4Qt8W8nvjUDJ1zCH-xnergUpXYjV1Em4JvmWbDFKOOJ4L0aLvC8KWP/exec";
 
 
 // Define the steps with titles, instructions, demo videos, and durations
