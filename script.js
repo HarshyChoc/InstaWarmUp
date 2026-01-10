@@ -89,7 +89,7 @@ const steps = [
     },
     {
         title: "Step 4: Engage in Main Feed",
-        instructions: "Scroll on the main feed. Stop only at posts related to the Relationship, family, and life niche. Engage with the posts in any way you want (commenting, liking, saving).",
+        instructions: "Scroll on the main feed. Stop only at posts related to the Gen Z niche. Engage with the posts in any way you want (commenting, liking, saving).",
         // demo: "steps/feed.mp4",
         duration: 180 // 5 minutes
     }
@@ -111,6 +111,7 @@ const usernameInput = document.getElementById("username");
 const horizontalListContainer = document.getElementById("horizontal-list-container");
 const horizontalList = document.getElementById("horizontal-list");
 const listTitle = document.getElementById("list-title");
+const completionMessage = document.getElementById("completion-message");
 
 // Debug: Check if all elements are found
 console.log("DOM Elements check:");
@@ -125,6 +126,7 @@ console.log("usernameInput:", usernameInput);
 console.log("horizontalListContainer:", horizontalListContainer);
 console.log("horizontalList:", horizontalList);
 console.log("listTitle:", listTitle);
+console.log("completionMessage:", completionMessage);
 
 // Defensive: remove legacy test button(s) if present, and watch for injections
 (function ensureNoTestButtons() {
@@ -452,6 +454,19 @@ function formatTime(seconds) {
     return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
 }
 
+function formatCompletionDateTime(date = new Date()) {
+    const formatter = new Intl.DateTimeFormat(undefined, {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit"
+    });
+
+    return formatter.format(date);
+}
+
 // Next Button Logic
 nextBtn.addEventListener("click", () => {
     clearInterval(timerInterval);
@@ -468,6 +483,9 @@ nextBtn.addEventListener("click", () => {
         stepScreen.style.display = "none";
         successScreen.style.display = "block";
         successScreen.classList.add("fade-in");
+        if (completionMessage) {
+            completionMessage.textContent = `Congrats on completing warm up for ${formatCompletionDateTime()}.`;
+        }
         updateSpreadsheet(username);
     }
 });
